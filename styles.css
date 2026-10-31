@@ -412,6 +412,11 @@ body {
     font-size: 0.88rem;
     outline: none;
     font-family: inherit;
+    width: 100%;
+}
+
+.toolbar-right .select-input {
+    width: auto;
 }
 
 .input:focus, .select-input:focus {
@@ -749,6 +754,88 @@ body {
 .dash-welcome-row { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.25rem; }
 .dash-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
 .key-box { display: flex; gap: 0.5rem; }
+
+.admin-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+}
+
+.admin-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.admin-card h3 {
+    font-size: 1.05rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-form-group label {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+}
+
+.admin-prod-box {
+    background: #101016;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.admin-price-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.45rem;
+}
+
+.admin-key-creator {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-keys-list {
+    max-height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.admin-key-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #101016;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+}
 
 .modal-backdrop, .drawer-backdrop {
     position: fixed;

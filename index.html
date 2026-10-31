@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Cheats</title>
-    <meta name="description" content="DRAGON CHEATS - Elite Gaming Software">
+    <title>Dragone Cheats</title>
+    <meta name="description" content="DRAGONE CHEATS - Elite Gaming Software">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,8 +20,8 @@
         <header class="landing-topbar">
             <div class="container landing-topbar-inner">
                 <a href="#" class="brand" onclick="goToStage('landing'); return false;">
-                    <img src="logo.png" alt="Dragon Logo" class="brand-logo-img">
-                    <span class="brand-text">DRAGON</span>
+                    <img src="logo.png" alt="Dragone Logo" class="brand-logo-img">
+                    <span class="brand-text">DRAGONE</span>
                 </a>
 
                 <div class="nav-actions">
@@ -35,15 +35,15 @@
 
         <main class="landing-center">
             <div class="container landing-center-inner">
-                <img src="logo.png" alt="Dragon Logo" class="hero-dragon-logo">
+                <img src="logo.png" alt="Dragone Logo" class="hero-dragon-logo">
 
                 <div class="system-online-pill">
                     <span class="pulse-dot"></span>
-                    <span data-i18n="system_online">System Online</span>
+                    <span id="heroStatusText" data-i18n="system_online">System Online</span>
                 </div>
 
                 <h1 class="hero-heading">
-                    <span class="text-dragon-gradient">DRAGON CHEATS</span>
+                    <span class="text-dragon-gradient" id="heroMainHeading">DRAGONE CHEATS</span>
                 </h1>
 
                 <p class="hero-description">
@@ -60,7 +60,7 @@
                         </div>
 
                         <form id="landingLoginForm" class="account-form" onsubmit="handleLandingLogin(event)">
-                            <input type="text" id="landLoginUser" class="input" placeholder="Kullanıcı Adı veya E-posta" required>
+                            <input type="text" id="landLoginUser" class="input" placeholder="E-posta veya Kullanıcı Adı" required>
                             <input type="password" id="landLoginPass" class="input" placeholder="Şifre" required>
                             <div id="landLoginError" class="form-error hidden"></div>
                             <button type="submit" class="btn btn-outline btn-full" data-i18n="btn_login">Hesaba Giriş Yap</button>
@@ -78,11 +78,14 @@
                     <div id="landingLoggedView" class="hidden">
                         <div class="logged-user-box">
                             <img src="logo.png" alt="Avatar" class="logged-avatar">
-                            <div style="text-align: left;">
+                            <div style="text-align: left; flex: 1;">
                                 <div class="logged-name" id="landingUserName">Kullanıcı</div>
                                 <div class="logged-status" id="landingUserLicense">Aktif Hesap</div>
                             </div>
-                            <button class="btn btn-ghost btn-sm" onclick="logoutUser()" data-i18n="btn_logout">Çıkış</button>
+                            <div style="display:flex; gap:0.4rem;">
+                                <button id="landingAdminBtn" class="btn btn-gradient btn-sm hidden" onclick="openAdminPanel()">⚙️ Admin</button>
+                                <button class="btn btn-ghost btn-sm" onclick="logoutUser()" data-i18n="btn_logout">Çıkış</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -97,7 +100,7 @@
         </main>
 
         <footer class="landing-minimal-footer">
-            <p>© 2026 Dragon. All rights reserved.</p>
+            <p>© 2026 Dragone. All rights reserved.</p>
         </footer>
     </div>
 
@@ -105,8 +108,8 @@
         <header class="navbar">
             <div class="container navbar-inner">
                 <a href="#" class="brand" onclick="goToStage('landing'); return false;">
-                    <img src="logo.png" alt="Dragon Logo" class="brand-logo-img">
-                    <span class="brand-text">DRAGON</span>
+                    <img src="logo.png" alt="Dragone Logo" class="brand-logo-img">
+                    <span class="brand-text">DRAGONE</span>
                 </a>
 
                 <nav class="nav-links">
@@ -114,7 +117,8 @@
                     <a href="#productsPanel" class="nav-item active" id="tabBtnProducts" onclick="switchStoreTab('products'); return false;" data-i18n="nav_products">Ürünler</a>
                     <a href="#featuresPanel" class="nav-item" id="tabBtnFeatures" onclick="switchStoreTab('features'); return false;">Performance Core</a>
                     <a href="#accountPanel" class="nav-item" id="tabBtnAccount" onclick="switchStoreTab('account'); return false;" data-i18n="nav_account">Account & Loader</a>
-                    <a href="https://discord.gg/Xp8QvyQGb2" target="_blank" rel="noopener" class="nav-item" data-i18n="nav_support">Discord Destek</a>
+                    <a href="#adminPanel" class="nav-item hidden" id="tabBtnAdmin" onclick="switchStoreTab('admin'); return false;">⚙️ Admin Paneli</a>
+                    <a id="navDiscordLink" href="https://discord.gg/Xp8QvyQGb2" target="_blank" rel="noopener" class="nav-item" data-i18n="nav_support">Discord Destek</a>
                 </nav>
 
                 <div class="nav-actions">
@@ -149,7 +153,7 @@
                                 <option value="CS2">CS2</option>
                             </select>
 
-                            <a href="https://discord.gg/Xp8QvyQGb2" target="_blank" rel="noopener" class="btn btn-gradient">
+                            <a id="toolbarDiscordBtn" href="https://discord.gg/Xp8QvyQGb2" target="_blank" rel="noopener" class="btn btn-gradient">
                                 <span data-i18n="btn_join_discord">Discord'a Katıl</span>
                             </a>
                         </div>
@@ -218,24 +222,78 @@
                 <div class="container">
                     <div class="account-panel-box">
                         <div class="dash-left">
-                            <img src="logo.png" alt="Dragon" class="dash-logo">
+                            <img src="logo.png" alt="Dragone" class="dash-logo">
                             <div>
                                 <div class="dash-welcome-row">
-                                    <h3 id="dashWelcomeText">Account & DragonLoader.exe</h3>
+                                    <h3 id="dashWelcomeText">Account & DragoneLoader.exe</h3>
                                     <span id="dashLicenseBadge" class="status-badge status-offline">Lisans Yok</span>
                                 </div>
-                                <p class="text-muted" data-i18n="dash_sub">Satın aldığınız lisans kodunu girerek DragonLoader.exe dosyasını indirebilirsiniz. (Test kodu: DRAGON-TEST-2026)</p>
+                                <p class="text-muted" data-i18n="dash_sub">Satın aldığınız lisans kodunu girerek DragoneLoader.exe dosyasını indirebilirsiniz. (Test kodu: DRAGONE-TEST-2026)</p>
                             </div>
                         </div>
 
                         <div class="dash-right">
                             <div class="key-box">
-                                <input type="text" id="licenseKeyInput" class="input mono" placeholder="DRAGON-XXXX-XXXX">
+                                <input type="text" id="licenseKeyInput" class="input mono" placeholder="DRAGONE-XXXX-XXXX">
                                 <button class="btn btn-gradient" onclick="redeemLicenseKey()" data-i18n="btn_activate">Aktifleştir</button>
                             </div>
                             <button id="downloadExeBtn" class="btn btn-outline" onclick="handleExeDownload()" disabled>
-                                <span>DragonLoader.exe İndir</span>
+                                <span>DragoneLoader.exe İndir</span>
                             </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="storeTabAdmin" class="store-tab-section hidden">
+                <div class="container">
+                    <div class="admin-header-bar">
+                        <div>
+                            <h2>⚙️ Dragone Admin Kontrol Paneli</h2>
+                            <p class="text-muted">Site ayarlarını, ürün fiyatlarını, aktif/yakında durumlarını ve lisans anahtarlarını buradan yönetin.</p>
+                        </div>
+                        <button class="btn btn-outline btn-sm" onclick="resetSiteConfig()">Varsayılan Ayarlara Sıfırla</button>
+                    </div>
+
+                    <div class="admin-grid">
+                        <div class="admin-card">
+                            <h3>Genel Site Ayarları</h3>
+                            <div class="admin-form-group">
+                                <label>Ana Başlık</label>
+                                <input type="text" id="admHeadingInput" class="input" value="DRAGONE CHEATS">
+                            </div>
+                            <div class="admin-form-group">
+                                <label>Discord Davet Linki</label>
+                                <input type="text" id="admDiscordInput" class="input" value="https://discord.gg/Xp8QvyQGb2">
+                            </div>
+                            <div class="admin-form-group">
+                                <label>DragoneLoader.exe İndirme Linki</label>
+                                <input type="text" id="admExeUrlInput" class="input" placeholder="https://...">
+                            </div>
+                            <button class="btn btn-gradient btn-full" onclick="saveGeneralAdminSettings()">Genel Ayarları Kaydet</button>
+                        </div>
+
+                        <div class="admin-card">
+                            <h3>Ürün Fiyatları ve Durum Yönetimi</h3>
+                            <div id="adminProductsEditor" class="admin-products-list"></div>
+                            <button class="btn btn-gradient btn-full" style="margin-top: 0.85rem;" onclick="saveProductsAdminSettings()">Ürünleri ve Fiyatları Kaydet</button>
+                        </div>
+
+                        <div class="admin-card">
+                            <h3>Lisans Anahtarı (Key) Yönetimi</h3>
+                            <div class="admin-key-creator">
+                                <input type="text" id="admNewKeyCode" class="input mono" placeholder="Örn: DRAGONE-VIP-001">
+                                <select id="admNewKeyPlan" class="select-input">
+                                    <option value="1 Haftalık MTA Lisansı">1 Haftalık Lisans</option>
+                                    <option value="1 Aylık MTA Lisansı">1 Aylık Lisans</option>
+                                    <option value="Sınırsız (Lifetime) MTA Lisansı">Sınırsız (Lifetime) Lisans</option>
+                                </select>
+                                <div style="display:flex; gap:0.5rem;">
+                                    <button class="btn btn-outline btn-full" onclick="generateRandomAdminKey()">Rastgele Key Üret</button>
+                                    <button class="btn btn-gradient btn-full" onclick="addAdminLicenseKey()">Key Ekle</button>
+                                </div>
+                            </div>
+                            <div id="adminKeysList" class="admin-keys-list"></div>
                         </div>
                     </div>
                 </div>
@@ -243,7 +301,7 @@
         </main>
 
         <footer class="landing-minimal-footer">
-            <p>© 2026 Dragon. All rights reserved.</p>
+            <p>© 2026 Dragone. All rights reserved.</p>
         </footer>
     </div>
 
@@ -251,9 +309,9 @@
         <div class="modal modal-lg">
             <div class="modal-header">
                 <div class="modal-brand-row">
-                    <img src="logo.png" alt="Dragon" class="modal-logo">
+                    <img src="logo.png" alt="Dragone" class="modal-logo">
                     <div>
-                        <h3 id="modalProductTitle">Dragon MTA Cheat</h3>
+                        <h3 id="modalProductTitle">Dragone MTA Cheat</h3>
                         <span id="modalProductSub" class="text-muted" style="font-size: 0.82rem;">MTA External/Internal cheat</span>
                     </div>
                 </div>

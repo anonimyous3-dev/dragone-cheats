@@ -1,20 +1,21 @@
-const SITE_CONFIG = {
+const DEFAULT_SITE_CONFIG = {
+    mainHeading: "DRAGONE CHEATS",
     discordUrl: "https://discord.gg/Xp8QvyQGb2",
     exeDownloadUrl: "#",
 
     validKeys: {
-        "DRAGON-TEST-2026": "Deneme Paketi (24 Saat)",
-        "DRAGON-WEEK-120": "1 Haftalık MTA Lisansı",
-        "DRAGON-MONTH-290": "1 Aylık MTA Lisansı",
-        "DRAGON-LIFE-650": "Sınırsız (Lifetime) MTA Lisansı"
+        "DRAGONE-TEST-2026": "Deneme Paketi (24 Saat)",
+        "DRAGONE-WEEK-120": "1 Haftalık MTA Lisansı",
+        "DRAGONE-MONTH-290": "1 Aylık MTA Lisansı",
+        "DRAGONE-LIFE-650": "Sınırsız (Lifetime) MTA Lisansı"
     },
 
     products: [
         {
             id: 6,
             game: "MTA",
-            name_tr: "Dragon MTA Cheat",
-            name_en: "Dragon MTA Cheat",
+            name_tr: "Dragone MTA Cheat",
+            name_en: "Dragone MTA Cheat",
             sub_tr: "MTA External/Internal Hile & Spoofer",
             sub_en: "MTA External/Internal Cheat & Spoofer",
             desc_tr: "⚡ Bu ürün hem Internal hem de External hile modüllerini içerir.\n\n🛡️ External Hile Sistemi: Oyun sürecinin (process) dışında çalışır, doğrudan enjeksiyon yapmadan bellek okuma/yazma ile etkileşime girer. Tespit edilme riskini sıfıra indirir.\n\n🔥 Internal Hile Sistemi: Doğrudan oyun içerisine entegre olarak Lua Executor, Silent Aim, RCON, Server Script Dumper ve gelişmiş araç/oyuncu kontrollerine tam erişim sağlar.",
@@ -39,8 +40,8 @@ const SITE_CONFIG = {
         {
             id: 9,
             game: "CS2",
-            name_tr: "Dragon CS2 Cheat",
-            name_en: "Dragon CS2 Cheat",
+            name_tr: "Dragone CS2 Cheat",
+            name_en: "Dragone CS2 Cheat",
             sub_tr: "External/Internal Yakında...",
             sub_en: "External/Internal Soon...",
             desc_tr: "Çok yakında stoklarda...",
@@ -56,6 +57,37 @@ const SITE_CONFIG = {
     ]
 };
 
+const STORAGE_CONFIG_KEY = "dragone_site_config_v1";
+const STORAGE_USERS_KEY = "dragone_users";
+const STORAGE_SESSION_KEY = "dragone_active_user";
+
+const ADMIN_ACCOUNT = {
+    username: "DragoneAdmin",
+    email: "anonimyous3@gmail.com",
+    password: "hidravenacabella33",
+    plan: "Sınırsız Admin Lisansı",
+    isAdmin: true
+};
+
+function loadSiteConfig() {
+    try {
+        const saved = localStorage.getItem(STORAGE_CONFIG_KEY);
+        if (saved) {
+            return JSON.parse(saved);
+        }
+    } catch {}
+    return JSON.parse(JSON.stringify(DEFAULT_SITE_CONFIG));
+}
+
+function saveSiteConfig() {
+    localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(SITE_CONFIG));
+    applyGeneralSiteConfig();
+    renderProducts();
+    renderAdminPanel();
+}
+
+let SITE_CONFIG = loadSiteConfig();
+
 const I18N = {
     tr: {
         nav_home: "Ana Ekran",
@@ -66,7 +98,7 @@ const I18N = {
         btn_signup: "Kayıt Ol",
         btn_logout: "Çıkış",
         btn_activate: "Aktifleştir",
-        dash_sub: "Satın aldığınız lisans kodunu girerek DragonLoader.exe dosyasını indirebilirsiniz. (Test kodu: DRAGON-TEST-2026)",
+        dash_sub: "Satın aldığınız lisans kodunu girerek DragoneLoader.exe dosyasını indirebilirsiniz. (Test kodu: DRAGONE-TEST-2026)",
         system_online: "Sistem Aktif",
         hero_desc_1: "Görünmezlik için tasarlanmış elit yazılım.",
         hero_desc_2: "Kernel seviyesinde güvenlik",
@@ -117,7 +149,7 @@ const I18N = {
         btn_signup: "Sign Up",
         btn_logout: "Log Out",
         btn_activate: "Activate",
-        dash_sub: "Enter your purchased license key to unlock DragonLoader.exe download. (Test key: DRAGON-TEST-2026)",
+        dash_sub: "Enter your purchased license key to unlock DragoneLoader.exe download. (Test key: DRAGONE-TEST-2026)",
         system_online: "System Online",
         hero_desc_1: "Elite software designed for invisibility.",
         hero_desc_2: "Kernel-level security",
@@ -161,20 +193,30 @@ const I18N = {
     }
 };
 
-let currentLang = localStorage.getItem("dragon_lang") || "tr";
-let cart = JSON.parse(localStorage.getItem("dragon_cart") || "[]");
+let currentLang = localStorage.getItem("dragone_lang") || "tr";
+let cart = JSON.parse(localStorage.getItem("dragone_cart") || "[]");
 let selectedProduct = null;
 let selectedTier = "week";
 let cardSelectedTiers = { 6: "week", 9: "week" };
 
-const STORAGE_USERS_KEY = "dragon_users";
-const STORAGE_SESSION_KEY = "dragon_active_user";
-
 document.addEventListener("DOMContentLoaded", () => {
+    applyGeneralSiteConfig();
     setLanguage(currentLang);
     updateCartUI();
     checkSession();
+    renderAdminPanel();
 });
+
+function applyGeneralSiteConfig() {
+    const headingEl = document.getElementById("heroMainHeading");
+    if (headingEl) headingEl.textContent = SITE_CONFIG.mainHeading || "DRAGONE CHEATS";
+
+    const navDc = document.getElementById("navDiscordLink");
+    if (navDc) navDc.href = SITE_CONFIG.discordUrl;
+
+    const toolDc = document.getElementById("toolbarDiscordBtn");
+    if (toolDc) toolDc.href = SITE_CONFIG.discordUrl;
+}
 
 function goToStage(stage) {
     const landing = document.getElementById("landingStage");
@@ -191,19 +233,31 @@ function goToStage(stage) {
     }
 }
 
+function openAdminPanel() {
+    goToStage("store");
+    switchStoreTab("admin");
+}
+
 function switchStoreTab(tabName) {
     document.getElementById("storeTabProducts").classList.toggle("hidden", tabName !== "products");
     document.getElementById("storeTabFeatures").classList.toggle("hidden", tabName !== "features");
     document.getElementById("storeTabAccount").classList.toggle("hidden", tabName !== "account");
+    document.getElementById("storeTabAdmin").classList.toggle("hidden", tabName !== "admin");
 
     document.getElementById("tabBtnProducts").classList.toggle("active", tabName === "products");
     document.getElementById("tabBtnFeatures").classList.toggle("active", tabName === "features");
     document.getElementById("tabBtnAccount").classList.toggle("active", tabName === "account");
+    const admBtn = document.getElementById("tabBtnAdmin");
+    if (admBtn) admBtn.classList.toggle("active", tabName === "admin");
+
+    if (tabName === "admin") {
+        renderAdminPanel();
+    }
 }
 
 function setLanguage(lang) {
     currentLang = lang;
-    localStorage.setItem("dragon_lang", lang);
+    localStorage.setItem("dragone_lang", lang);
     document.documentElement.lang = lang;
 
     document.querySelectorAll(".lang-tr").forEach(b => b.classList.toggle("active", lang === "tr"));
@@ -261,7 +315,7 @@ function renderProducts() {
             <div class="product-card">
                 <div class="product-thumb">
                     <img src="${p.image}" alt="${title}" class="product-cover" onerror="this.src='logo.png'">
-                    <img src="logo.png" alt="Dragon" class="product-dragon-watermark">
+                    <img src="logo.png" alt="Dragone" class="product-dragon-watermark">
                     <div class="thumb-top-left">
                         <span class="tag-game">${p.game}</span>
                         ${p.isPremium ? '<span class="tag-premium">Premium</span>' : ''}
@@ -371,7 +425,7 @@ function addSelectedToCart() {
         price: selectedProduct.prices[selectedTier]
     });
 
-    localStorage.setItem("dragon_cart", JSON.stringify(cart));
+    localStorage.setItem("dragone_cart", JSON.stringify(cart));
     updateCartUI();
     closeModal("productModal");
     toggleCartDrawer(true);
@@ -388,7 +442,7 @@ function toggleCartDrawer(open) {
 
 function removeFromCart(uid) {
     cart = cart.filter(item => item.uid !== uid);
-    localStorage.setItem("dragon_cart", JSON.stringify(cart));
+    localStorage.setItem("dragone_cart", JSON.stringify(cart));
     updateCartUI();
 }
 
@@ -461,8 +515,13 @@ function handleLandingRegister(e) {
     const email = document.getElementById("landRegEmail").value.trim();
     const password = document.getElementById("landRegPass").value;
 
+    if (email.toLowerCase() === ADMIN_ACCOUNT.email.toLowerCase() && password === ADMIN_ACCOUNT.password) {
+        setActiveUser(ADMIN_ACCOUNT);
+        return;
+    }
+
     const users = getUsers();
-    const newUser = { username, email, password, plan: null };
+    const newUser = { username, email, password, plan: null, isAdmin: false };
     users.push(newUser);
     saveUsers(users);
     setActiveUser(newUser);
@@ -471,21 +530,30 @@ function handleLandingRegister(e) {
 function handleLandingLogin(e) {
     e.preventDefault();
     const id = document.getElementById("landLoginUser").value.trim().toLowerCase();
-    const pw = document.getElementById("landLoginPass").value;
+    const pw = document.getElementById("landLoginPass").value.trim();
+
+    if ((id === ADMIN_ACCOUNT.email.toLowerCase() || id === "dragoneadmin" || id === "admin") && pw === ADMIN_ACCOUNT.password) {
+        document.getElementById("landLoginError").classList.add("hidden");
+        setActiveUser(ADMIN_ACCOUNT);
+        return;
+    }
+
     const users = getUsers();
     const found = users.find(u => (u.username.toLowerCase() === id || u.email.toLowerCase() === id) && u.password === pw);
 
     if (!found) {
         const err = document.getElementById("landLoginError");
-        err.textContent = currentLang === "tr" ? "Kullanıcı veya şifre hatalı." : "Invalid username or password.";
+        err.textContent = currentLang === "tr" ? "E-posta veya şifre hatalı." : "Invalid email or password.";
         err.classList.remove("hidden");
         return;
     }
+    document.getElementById("landLoginError").classList.add("hidden");
     setActiveUser(found);
 }
 
 function logoutUser() {
     setActiveUser(null);
+    switchStoreTab("products");
 }
 
 function closeModal(id) {
@@ -503,10 +571,14 @@ function checkSession() {
     const guestView = document.getElementById("landingGuestView");
     const loggedView = document.getElementById("landingLoggedView");
     const storeNavUser = document.getElementById("storeNavUser");
+    const tabBtnAdmin = document.getElementById("tabBtnAdmin");
+    const landingAdminBtn = document.getElementById("landingAdminBtn");
 
     if (!user) {
         guestView.classList.remove("hidden");
         loggedView.classList.add("hidden");
+        if (tabBtnAdmin) tabBtnAdmin.classList.add("hidden");
+        if (landingAdminBtn) landingAdminBtn.classList.add("hidden");
         storeNavUser.innerHTML = `
             <button class="btn btn-outline btn-sm" onclick="goToStage('landing')">${dict.btn_login}</button>
         `;
@@ -515,19 +587,30 @@ function checkSession() {
 
     guestView.classList.add("hidden");
     loggedView.classList.remove("hidden");
-    document.getElementById("landingUserName").textContent = user.username;
+    document.getElementById("landingUserName").textContent = user.isAdmin ? `${user.username} (ADMIN)` : user.username;
     document.getElementById("landingUserLicense").textContent = user.plan ? user.plan : (currentLang === "tr" ? "Üye Hesabı (Aktif)" : "Member Account");
 
-    storeNavUser.innerHTML = `
-        <button class="btn btn-outline btn-sm" onclick="switchStoreTab('account')">👤 ${user.username}</button>
-    `;
+    if (user.isAdmin) {
+        if (tabBtnAdmin) tabBtnAdmin.classList.remove("hidden");
+        if (landingAdminBtn) landingAdminBtn.classList.remove("hidden");
+        storeNavUser.innerHTML = `
+            <button class="btn btn-gradient btn-sm" onclick="switchStoreTab('admin')">⚙️ Admin Panel</button>
+            <button class="btn btn-outline btn-sm" onclick="switchStoreTab('account')">👤 ${user.username}</button>
+        `;
+    } else {
+        if (tabBtnAdmin) tabBtnAdmin.classList.add("hidden");
+        if (landingAdminBtn) landingAdminBtn.classList.add("hidden");
+        storeNavUser.innerHTML = `
+            <button class="btn btn-outline btn-sm" onclick="switchStoreTab('account')">👤 ${user.username}</button>
+        `;
+    }
 
     document.getElementById("dashWelcomeText").textContent = `${user.username} — Account`;
     const badge = document.getElementById("dashLicenseBadge");
     const dlBtn = document.getElementById("downloadExeBtn");
 
-    if (user.plan) {
-        badge.textContent = user.plan;
+    if (user.plan || user.isAdmin) {
+        badge.textContent = user.plan || "Admin Lisansı";
         badge.className = "status-badge status-online";
         dlBtn.disabled = false;
     } else {
@@ -541,12 +624,12 @@ function redeemLicenseKey() {
     const code = document.getElementById("licenseKeyInput").value.trim().toUpperCase();
     let user = getActiveUser();
     if (!user) {
-        user = { username: "DragonUser", email: "", password: "", plan: null };
+        user = { username: "DragoneUser", email: "", password: "", plan: null };
     }
 
     const planName = SITE_CONFIG.validKeys[code];
     if (!planName) {
-        alert(currentLang === "tr" ? "Geçersiz lisans kodu! Test için DRAGON-TEST-2026 kodunu deneyin." : "Invalid key! Try DRAGON-TEST-2026.");
+        alert(currentLang === "tr" ? "Geçersiz lisans kodu! Test için DRAGONE-TEST-2026 kodunu deneyin." : "Invalid key! Try DRAGONE-TEST-2026.");
         return;
     }
 
@@ -557,10 +640,124 @@ function redeemLicenseKey() {
 
 function handleExeDownload() {
     const user = getActiveUser();
-    if (!user || !user.plan) return;
-    if (SITE_CONFIG.exeDownloadUrl.startsWith("http")) {
+    if (!user || (!user.plan && !user.isAdmin)) return;
+    if (SITE_CONFIG.exeDownloadUrl && SITE_CONFIG.exeDownloadUrl.startsWith("http")) {
         window.open(SITE_CONFIG.exeDownloadUrl, "_blank");
     } else {
-        alert("DragonLoader.exe indirmesi başlatılıyor!");
+        alert("DragoneLoader.exe indirmesi başlatılıyor!");
     }
+}
+
+function renderAdminPanel() {
+    const headIn = document.getElementById("admHeadingInput");
+    const dcIn = document.getElementById("admDiscordInput");
+    const exeIn = document.getElementById("admExeUrlInput");
+    if (headIn) headIn.value = SITE_CONFIG.mainHeading || "DRAGONE CHEATS";
+    if (dcIn) dcIn.value = SITE_CONFIG.discordUrl || "";
+    if (exeIn) exeIn.value = SITE_CONFIG.exeDownloadUrl || "";
+
+    const prodEditor = document.getElementById("adminProductsEditor");
+    if (prodEditor) {
+        prodEditor.innerHTML = SITE_CONFIG.products.map((p, idx) => `
+            <div class="admin-prod-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+                    <input type="text" class="input" id="admProdName_${idx}" value="${p.name_tr}" style="font-weight:700;">
+                    <select class="select-input" id="admProdStatus_${idx}" style="width:130px;">
+                        <option value="online" ${p.status === 'online' ? 'selected' : ''}>Aktif</option>
+                        <option value="offline" ${p.status === 'offline' ? 'selected' : ''}>Yakında</option>
+                    </select>
+                </div>
+                <input type="text" class="input" id="admProdSub_${idx}" value="${p.sub_tr}" placeholder="Alt açıklama">
+                <div class="admin-price-row">
+                    <div>
+                        <label style="font-size:0.7rem; color:#a1a1aa;">1 Hafta (TL)</label>
+                        <input type="number" class="input" id="admPriceWeek_${idx}" value="${p.prices.week}">
+                    </div>
+                    <div>
+                        <label style="font-size:0.7rem; color:#a1a1aa;">1 Ay (TL)</label>
+                        <input type="number" class="input" id="admPriceMonth_${idx}" value="${p.prices.month}">
+                    </div>
+                    <div>
+                        <label style="font-size:0.7rem; color:#a1a1aa;">Sınırsız (TL)</label>
+                        <input type="number" class="input" id="admPriceLife_${idx}" value="${p.prices.lifetime}">
+                    </div>
+                </div>
+            </div>
+        `).join("");
+    }
+
+    const keysList = document.getElementById("adminKeysList");
+    if (keysList) {
+        const entries = Object.entries(SITE_CONFIG.validKeys || {});
+        keysList.innerHTML = entries.map(([k, v]) => `
+            <div class="admin-key-item">
+                <div>
+                    <strong class="mono" style="color:var(--dragon-gold);">${k}</strong>
+                    <div class="text-muted" style="font-size:0.72rem;">${v}</div>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="deleteAdminKey('${k}')">Sil</button>
+            </div>
+        `).join("");
+    }
+}
+
+function saveGeneralAdminSettings() {
+    SITE_CONFIG.mainHeading = document.getElementById("admHeadingInput").value.trim() || "DRAGONE CHEATS";
+    SITE_CONFIG.discordUrl = document.getElementById("admDiscordInput").value.trim() || "https://discord.gg/Xp8QvyQGb2";
+    SITE_CONFIG.exeDownloadUrl = document.getElementById("admExeUrlInput").value.trim() || "#";
+    saveSiteConfig();
+    alert("Genel site ayarları kaydedildi!");
+}
+
+function saveProductsAdminSettings() {
+    SITE_CONFIG.products.forEach((p, idx) => {
+        const newName = document.getElementById(`admProdName_${idx}`).value.trim();
+        const newSub = document.getElementById(`admProdSub_${idx}`).value.trim();
+        const newStatus = document.getElementById(`admProdStatus_${idx}`).value;
+        const w = Number(document.getElementById(`admPriceWeek_${idx}`).value) || 120;
+        const m = Number(document.getElementById(`admPriceMonth_${idx}`).value) || 290;
+        const l = Number(document.getElementById(`admPriceLife_${idx}`).value) || 650;
+
+        p.name_tr = newName;
+        p.name_en = newName;
+        p.sub_tr = newSub;
+        p.status = newStatus;
+        p.prices = { week: w, month: m, lifetime: l };
+    });
+    saveSiteConfig();
+    alert("Ürün fiyatları ve durumları başarıyla güncellendi!");
+}
+
+function generateRandomAdminKey() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let part1 = "";
+    let part2 = "";
+    for (let i = 0; i < 4; i++) {
+        part1 += chars[Math.floor(Math.random() * chars.length)];
+        part2 += chars[Math.floor(Math.random() * chars.length)];
+    }
+    document.getElementById("admNewKeyCode").value = `DRAGONE-${part1}-${part2}`;
+}
+
+function addAdminLicenseKey() {
+    const code = document.getElementById("admNewKeyCode").value.trim().toUpperCase();
+    const plan = document.getElementById("admNewKeyPlan").value;
+    if (!code) return;
+    SITE_CONFIG.validKeys[code] = plan;
+    document.getElementById("admNewKeyCode").value = "";
+    saveSiteConfig();
+}
+
+function deleteAdminKey(code) {
+    delete SITE_CONFIG.validKeys[code];
+    saveSiteConfig();
+}
+
+function resetSiteConfig() {
+    localStorage.removeItem(STORAGE_CONFIG_KEY);
+    SITE_CONFIG = JSON.parse(JSON.stringify(DEFAULT_SITE_CONFIG));
+    applyGeneralSiteConfig();
+    renderProducts();
+    renderAdminPanel();
+    alert("Ayarlar varsayılana sıfırlandı!");
 }
