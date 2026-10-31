@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Cheats</title>
-    <meta name="description" content="DRAGON CHEATS - Elite MTA Software & HWID Spoofer">
+    <meta name="description" content="DRAGON CHEATS - Elite Gaming Software">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,17 +12,11 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <!-- =========================================================
-         1. EKRAN (İLK AÇILIŞ): SADECE DRAGON CHEATS + ACCOUNT KISMI
-         Altında hiçbir kalabalık yok, sadece "© 2026 Dragon. All rights reserved."
-         ========================================================= -->
     <div id="landingStage" class="landing-stage">
         <div class="hero-glow hero-glow-1"></div>
         <div class="hero-glow hero-glow-2"></div>
         <div class="hero-grid-bg"></div>
 
-        <!-- Üst Bar -->
         <header class="landing-topbar">
             <div class="container landing-topbar-inner">
                 <a href="#" class="brand" onclick="goToStage('landing'); return false;">
@@ -39,7 +33,6 @@
             </div>
         </header>
 
-        <!-- Orta Alan: DRAGON CHEATS + ACCOUNT KUTUSU + HEMEN BAŞLA -->
         <main class="landing-center">
             <div class="container landing-center-inner">
                 <img src="logo.png" alt="Dragon Logo" class="hero-dragon-logo">
@@ -59,16 +52,13 @@
                     <span data-i18n="hero_desc_3">profesyonel performans ile buluşuyor.</span>
                 </p>
 
-                <!-- ACCOUNT (HESAP GİRİŞ / KAYIT) KARTI -->
                 <div class="landing-account-card" id="landingAccountBox">
-                    <!-- Giriş Yapılmamışsa Form Görünür -->
                     <div id="landingGuestView">
                         <div class="account-tabs">
                             <button id="landTabLogin" class="account-tab active" onclick="switchLandingAuthTab('login')" data-i18n="btn_login">Giriş Yap</button>
                             <button id="landTabRegister" class="account-tab" onclick="switchLandingAuthTab('register')" data-i18n="btn_signup">Kayıt Ol</button>
                         </div>
 
-                        <!-- Giriş Formu -->
                         <form id="landingLoginForm" class="account-form" onsubmit="handleLandingLogin(event)">
                             <input type="text" id="landLoginUser" class="input" placeholder="Kullanıcı Adı veya E-posta" required>
                             <input type="password" id="landLoginPass" class="input" placeholder="Şifre" required>
@@ -76,7 +66,6 @@
                             <button type="submit" class="btn btn-outline btn-full" data-i18n="btn_login">Hesaba Giriş Yap</button>
                         </form>
 
-                        <!-- Kayıt Formu -->
                         <form id="landingRegisterForm" class="account-form hidden" onsubmit="handleLandingRegister(event)">
                             <input type="text" id="landRegUser" class="input" placeholder="Kullanıcı Adı" required minlength="3">
                             <input type="email" id="landRegEmail" class="input" placeholder="E-posta Adresi" required>
@@ -86,7 +75,6 @@
                         </form>
                     </div>
 
-                    <!-- Giriş Yapılmışsa Hesap Özeti Görünür -->
                     <div id="landingLoggedView" class="hidden">
                         <div class="logged-user-box">
                             <img src="logo.png" alt="Avatar" class="logged-avatar">
@@ -99,7 +87,6 @@
                     </div>
                 </div>
 
-                <!-- HEMEN BAŞLA BUTONU -> 2. PANELE ATAR -->
                 <div class="hero-buttons">
                     <button class="btn btn-gradient btn-xl" onclick="goToStage('store')">
                         <span data-i18n="btn_get_started">Hemen Başla</span>
@@ -109,18 +96,12 @@
             </div>
         </main>
 
-        <!-- Alt Kısımda SADECE © 2026 Dragon. All rights reserved. -->
         <footer class="landing-minimal-footer">
             <p>© 2026 Dragon. All rights reserved.</p>
         </footer>
     </div>
 
-
-    <!-- =========================================================
-         2. EKRAN (STORK 2. PANEL): HEMEN BAŞLA DEYİNCE AÇILAN MAĞAZA & PANEL
-         ========================================================= -->
     <div id="storeStage" class="store-stage hidden">
-        <!-- Üst Menü (Stork Navbar) -->
         <header class="navbar">
             <div class="container navbar-inner">
                 <a href="#" class="brand" onclick="goToStage('landing'); return false;">
@@ -142,7 +123,6 @@
                         <button class="lang-btn lang-en" onclick="setLanguage('en')">EN</button>
                     </div>
 
-                    <!-- Sepet Butonu -->
                     <button class="icon-btn cart-trigger" onclick="toggleCartDrawer(true)" aria-label="Cart">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
                         <span id="cartBadge" class="cart-badge hidden">0</span>
@@ -153,13 +133,10 @@
             </div>
         </header>
 
-        <!-- 2. PANEL ANA İÇERİK -->
         <main class="store-main">
-            <!-- SEKME 1: STORK 2. PANEL (ÜRÜNLER KATALOĞU + FİLTRE + ARAMA) -->
             <section id="storeTabProducts" class="store-tab-section">
                 <div class="container">
-                    <!-- Stork 2. Panel Üst Arama ve Kategori Barı -->
-                    <div class="stork-catalog-toolbar">
+                    <div class="catalog-toolbar">
                         <div class="search-box">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                             <input type="text" id="productSearchInput" class="input" placeholder="Search products..." oninput="renderProducts()">
@@ -169,7 +146,6 @@
                             <select id="categoryFilter" class="select-input" onchange="renderProducts()">
                                 <option value="all" data-i18n="cat_all">Tüm Oyunlar</option>
                                 <option value="MTA">MTA</option>
-                                <option value="FiveM">FiveM</option>
                                 <option value="CS2">CS2</option>
                             </select>
 
@@ -179,12 +155,10 @@
                         </div>
                     </div>
 
-                    <!-- Ürün Kartları Grid (Stork 2. Panel) -->
                     <div id="productsGrid" class="products-grid"></div>
                 </div>
             </section>
 
-            <!-- SEKME 2: PERFORMANCE CORE (ÖZELLİKLER & İSTATİSTİKLER) -->
             <section id="storeTabFeatures" class="store-tab-section hidden">
                 <div class="container">
                     <div class="stats-grid mb-12">
@@ -240,7 +214,6 @@
                 </div>
             </section>
 
-            <!-- SEKME 3: ACCOUNT & LOADER (.EXE) PANELİ -->
             <section id="storeTabAccount" class="store-tab-section hidden">
                 <div class="container">
                     <div class="account-panel-box">
@@ -269,14 +242,11 @@
             </section>
         </main>
 
-        <!-- 2. Panel Altında Sadece Minimal Telif Yazısı -->
         <footer class="landing-minimal-footer">
             <p>© 2026 Dragon. All rights reserved.</p>
         </footer>
     </div>
 
-
-    <!-- ÜRÜN DETAY & PAKET SEÇİM MODALI (1 Hafta 120 TL / 1 Ay 290 TL / Sınırsız 650 TL) -->
     <div id="productModal" class="modal-backdrop hidden" onclick="closeModalOnBackdrop(event, 'productModal')">
         <div class="modal modal-lg">
             <div class="modal-header">
@@ -311,7 +281,6 @@
         </div>
     </div>
 
-    <!-- SEPET ÇEKMECESİ (CART DRAWER) -->
     <div id="cartDrawerBackdrop" class="drawer-backdrop hidden" onclick="toggleCartDrawer(false)">
         <div class="cart-drawer" onclick="event.stopPropagation()">
             <div class="drawer-header">

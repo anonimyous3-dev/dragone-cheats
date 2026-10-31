@@ -1,9 +1,6 @@
-// =========================================================
-// DRAGON CHEATS — AYARLAR & ÜRÜNLER (1 Hafta 120 TL | 1 Ay 290 TL | Sınırsız 650 TL)
-// =========================================================
 const SITE_CONFIG = {
     discordUrl: "https://discord.gg/Xp8QvyQGb2",
-    exeDownloadUrl: "# DragonLoader.exe indirme linkinizi buraya yazabilirsiniz",
+    exeDownloadUrl: "#",
 
     validKeys: {
         "DRAGON-TEST-2026": "Deneme Paketi (24 Saat)",
@@ -36,53 +33,16 @@ const SITE_CONFIG = {
             status: "online",
             rating: "4.9",
             reviews: 142,
-            image: "https://i.hizliresim.com/hfqm98r.png",
+            image: "mta.png",
             isPremium: true
-        },
-        {
-            id: 7,
-            game: "MTA",
-            name_tr: "Dragon MTA Spoofer",
-            name_en: "Dragon MTA Spoofer",
-            sub_tr: "MTA Kalıcı Serial & HWID Değiştirici",
-            sub_en: "MTA Serial & HWID Spoofer",
-            desc_tr: "Dragon MTA Serial Spoofer, orijinal donanım kimliğinizi (Serial/HWID) güvenle maskeler ve her oyuna girdiğinizde temiz bir kimlik sağlar. Global ve sunucu banlarını format gerektirmeden kaldırır.",
-            desc_en: "Our Dragon MTA Serial Spoofer securely masks your original hardware serials, giving you a fresh and protected identity every time you play. Fast, lightweight, and designed specifically for MTA.",
-            features: [
-                "🛡️ [SPOOFER] — One-Click MTA Serial Spoofer • HWID & MAC Masking",
-                "🧹 [CLEANER] — Anti-Cheat Trace & Registry Cleaner • Ban Bypass"
-            ],
-            prices: { week: 120, month: 290, lifetime: 650 },
-            status: "online",
-            rating: "4.9",
-            reviews: 89,
-            image: "https://i.hizliresim.com/qh8f5r3.png",
-            isPremium: true
-        },
-        {
-            id: 8,
-            game: "FiveM",
-            name_tr: "Dragon FiveM",
-            name_en: "Dragon FiveM",
-            sub_tr: "FiveM External/Internal Yakında...",
-            sub_en: "FiveM External/Internal Soon...",
-            desc_tr: "Çok yakında stoklarda...",
-            desc_en: "Coming soon...",
-            features: ["Soon..."],
-            prices: { week: 120, month: 290, lifetime: 650 },
-            status: "offline",
-            rating: "5.0",
-            reviews: 0,
-            image: "https://i.hizliresim.com/dqyqdvy.png",
-            isPremium: false
         },
         {
             id: 9,
             game: "CS2",
             name_tr: "Dragon CS2 Cheat",
             name_en: "Dragon CS2 Cheat",
-            sub_tr: "Counter-Strike 2 External Yakında...",
-            sub_en: "Counter-Strike 2 External Soon...",
+            sub_tr: "External/Internal Yakında...",
+            sub_en: "External/Internal Soon...",
             desc_tr: "Çok yakında stoklarda...",
             desc_en: "Coming soon...",
             features: ["Soon..."],
@@ -90,15 +50,12 @@ const SITE_CONFIG = {
             status: "offline",
             rating: "5.0",
             reviews: 0,
-            image: "logo.png",
+            image: "cs2.png",
             isPremium: false
         }
     ]
 };
 
-// =========================================================
-// ÇOKLU DİL SÖZLÜĞÜ (TR / EN)
-// =========================================================
 const I18N = {
     tr: {
         nav_home: "Ana Ekran",
@@ -208,7 +165,7 @@ let currentLang = localStorage.getItem("dragon_lang") || "tr";
 let cart = JSON.parse(localStorage.getItem("dragon_cart") || "[]");
 let selectedProduct = null;
 let selectedTier = "week";
-let cardSelectedTiers = { 6: "week", 7: "week", 8: "week", 9: "week" };
+let cardSelectedTiers = { 6: "week", 9: "week" };
 
 const STORAGE_USERS_KEY = "dragon_users";
 const STORAGE_SESSION_KEY = "dragon_active_user";
@@ -219,9 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
     checkSession();
 });
 
-// =========================================================
-// 1. EKRAN (ACCOUNT) <-> 2. EKRAN (STORK 2. PANEL) GEÇİŞİ
-// =========================================================
 function goToStage(stage) {
     const landing = document.getElementById("landingStage");
     const store = document.getElementById("storeStage");
@@ -269,9 +223,6 @@ function setLanguage(lang) {
     checkSession();
 }
 
-// =========================================================
-// ÜRÜNLERİ LİSTELEME & HAFTALIK/AYLIK/SINIRSIZ SEÇİMİ
-// =========================================================
 function selectCardTier(productId, tierKey) {
     cardSelectedTiers[productId] = tierKey;
     renderProducts();
@@ -431,9 +382,6 @@ function buySelectedNow() {
     window.open(SITE_CONFIG.discordUrl, "_blank");
 }
 
-// =========================================================
-// ALIŞVERİŞ SEPETİ (CART DRAWER)
-// =========================================================
 function toggleCartDrawer(open) {
     document.getElementById("cartDrawerBackdrop").classList.toggle("hidden", !open);
 }
@@ -481,9 +429,6 @@ function proceedToCheckout() {
     window.open(SITE_CONFIG.discordUrl, "_blank");
 }
 
-// =========================================================
-// ACCOUNT (KAYIT OL / GİRİŞ YAP) SİSTEMİ
-// =========================================================
 function getUsers() {
     try { return JSON.parse(localStorage.getItem(STORAGE_USERS_KEY) || "[]"); } catch { return []; }
 }
@@ -521,7 +466,6 @@ function handleLandingRegister(e) {
     users.push(newUser);
     saveUsers(users);
     setActiveUser(newUser);
-    // Kayıt olunca otomatik 2. panele de geçebilir veya kullanıcı Hemen Başla'ya basabilir
 }
 
 function handleLandingLogin(e) {
