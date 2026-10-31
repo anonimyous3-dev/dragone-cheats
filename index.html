@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragone Cheats — MTA:SA Yazılım Çözümleri</title>
+    <meta name="description" content="Multi Theft Auto (MTA:SA) için geliştirilmiş minimalist, güvenli ve yüksek performanslı yazılım çözümü.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Üst Bilgi Çubuğu -->
+    <div class="top-banner">
+        <div class="container top-banner-inner">
+            <span class="status-dot"></span>
+            <span><strong>MTA:SA v1.6</strong> tüm sunucularda aktif ve tespit edilemez (Undetected) durumda.</span>
+            <a href="#pricing" class="banner-link">Paketleri İncele &rarr;</a>
+        </div>
+    </div>
+
+    <!-- Navigasyon -->
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <a href="#" class="brand">
+                <div class="brand-logo">D</div>
+                <span class="brand-name">Dragone<span class="brand-muted">Cheats</span></span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#features">Özellikler</a>
+                <a href="#preview">Yazılım Önizleme</a>
+                <a href="#pricing">Fiyatlandırma</a>
+                <a href="#faq">S.S.S.</a>
+            </nav>
+
+            <div class="nav-actions" id="navAuthArea">
+                <!-- JS tarafından doldurulur: Giriş Yap / Kayıt Ol veya Müşteri Paneli butonu -->
+                <button class="btn btn-ghost" onclick="openAuthModal('login')">Giriş Yap</button>
+                <button class="btn btn-primary" onclick="openAuthModal('register')">Kayıt Ol</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MÜŞTERİ PANELİ (Giriş Yapıldığında Görünür) -->
+    <section id="dashboardSection" class="dashboard-section hidden">
+        <div class="container">
+            <div class="dashboard-header">
+                <div>
+                    <span class="badge badge-outline">Müşteri Paneli</span>
+                    <h2 id="dashboardWelcome">Hoş geldin, Kullanıcı</h2>
+                    <p class="text-muted">Lisans durumunuzu yönetin, paket satın alın veya Dragone Loader (.exe) indirin.</p>
+                </div>
+                <div class="dashboard-actions">
+                    <button class="btn btn-ghost" onclick="logoutUser()">Çıkış Yap</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Hesap & Lisans Kartı -->
+                <div class="card dashboard-card">
+                    <div class="card-header-row">
+                        <h3>Lisans Durumu</h3>
+                        <span id="licenseBadge" class="status-pill status-inactive">Lisans Yok</span>
+                    </div>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="text-muted">Kullanıcı Adı</span>
+                            <span id="dashUsername" class="mono">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="text-muted">Aktif Paket</span>
+                            <span id="dashPlan">Ücretsiz Hesap (Paket Yok)</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="text-muted">HWID Durumu</span>
+                            <span id="dashHwid" class="mono">Kilitli Değil</span>
+                        </div>
+                    </div>
+
+                    <div class="key-redeem-box">
+                        <label for="licenseKeyInput">Lisans Anahtarı (Key) Aktifleştir</label>
+                        <div class="input-group">
+                            <input type="text" id="licenseKeyInput" placeholder="DRAGONE-XXXX-XXXX-XXXX" class="input mono">
+                            <button class="btn btn-primary" onclick="redeemLicenseKey()">Aktifleştir</button>
+                        </div>
+                        <p class="help-text">Satın aldığınız lisans kodunu girerek .exe indirme erişimini açabilirsiniz. (Test için: <code class="mono">DRAGONE-TEST-2026</code>)</p>
+                    </div>
+                </div>
+
+                <!-- Loader (.exe) İndirme Kartı -->
+                <div class="card dashboard-card">
+                    <div class="card-header-row">
+                        <h3>Dragone Loader (.exe)</h3>
+                        <span class="mono text-muted">v2.4.1 Stable</span>
+                    </div>
+                    <p class="text-muted" style="margin-bottom: 1rem;">
+                        MTA:SA entegrasyonu, otomatik güncelleme ve HWID doğrulaması içeren resmi kurulum dosyası.
+                    </p>
+                    <div class="loader-specs">
+                        <div class="spec-box">
+                            <span class="spec-label">Dosya</span>
+                            <span class="spec-val mono">DragoneLoader.exe</span>
+                        </div>
+                        <div class="spec-box">
+                            <span class="spec-label">Boyut</span>
+                            <span class="spec-val mono">4.8 MB</span>
+                        </div>
+                        <div class="spec-box">
+                            <span class="spec-label">Uyumluluk</span>
+                            <span class="spec-val">Win 10 / Win 11 (x64)</span>
+                        </div>
+                    </div>
+
+                    <div id="downloadLockedNotice" class="notice-box">
+                        <span>🔒</span>
+                        <div>
+                            <strong>İndirme Kilitli</strong>
+                            <p>DragoneLoader.exe dosyasını indirmek için aktif bir aboneliğiniz olmalıdır. Aşağıdan paket seçebilir veya lisans kodunuzu girebilirsiniz.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: auto; padding-top: 1rem; display: flex; gap: 0.75rem;">
+                        <button id="downloadExeBtn" class="btn btn-primary btn-full" onclick="handleExeDownload()" disabled>
+                            DragoneLoader.exe İndir
+                        </button>
+                        <a href="#pricing" class="btn btn-outline">Paket Satın Al</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HERO BÖLÜMÜ -->
+    <main>
+        <section class="hero">
+            <div class="container hero-inner">
+                <div class="hero-badge">
+                    <span class="mono">MTA:SA 1.6</span>
+                    <span class="divider">|</span>
+                    <span>Kernel Seviyesi Koruma & Stream Proof</span>
+                </div>
+                <h1 class="hero-title">
+                    MTA:SA için profesyonel,<br>
+                    <span class="text-gradient">minimalist ve güvenli</span> yazılım.
+                </h1>
+                <p class="hero-subtitle">
+                    Sıfır FPS kaybı, dahili HWID Spoofer, gelişmiş Lua Executor ve özelleştirilebilir Aimbot/ESP modülleri. 
+                    Hesabınızı oluşturun, paketinizi seçin ve <strong>DragoneLoader.exe</strong> ile hemen başlayın.
+                </p>
+                <div class="hero-cta">
+                    <button class="btn btn-primary btn-lg" onclick="openAuthModal('register')">
+                        Hemen Kayıt Ol & Başla
+                    </button>
+                    <a href="#features" class="btn btn-outline btn-lg">
+                        Özellikleri İncele
+                    </a>
+                </div>
+
+                <div class="hero-metrics">
+                    <div class="metric">
+                        <span class="metric-value">%99.9</span>
+                        <span class="metric-label">Uptime & Güvenlik</span>
+                    </div>
+                    <div class="metric-sep"></div>
+                    <div class="metric">
+                        <span class="metric-value">0 FPS</span>
+                        <span class="metric-label">Performans Kaybı</span>
+                    </div>
+                    <div class="metric-sep"></div>
+                    <div class="metric">
+                        <span class="metric-value">7/24</span>
+                        <span class="metric-label">Otomatik Teslimat</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ETKİLEŞİMLİ EXE ARAYÜZ ÖNİZLEMESİ -->
+        <section id="preview" class="preview-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="badge">Yazılım Arayüzü</span>
+                    <h2>Dragone.exe Oyun İçi Menü Önizlemesi</h2>
+                    <p class="text-muted">Oyun içinde <code class="mono">INSERT</code> tuşu ile açılan sade ve hızlı kontrol panelini aşağıdan test edebilirsiniz.</p>
+                </div>
+
+                <div class="software-window">
+                    <div class="window-titlebar">
+                        <div class="window-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="window-title mono">DragoneLoader.exe — MTA:SA [PID: 8412] — Undetected</div>
+                        <div class="window-status mono">FPS: 144</div>
+                    </div>
+                    <div class="window-body">
+                        <div class="window-sidebar">
+                            <button class="sim-tab active" onclick="switchSimTab('aimbot', this)">Aimbot & Silah</button>
+                            <button class="sim-tab" onclick="switchSimTab('visuals', this)">ESP & Görseller</button>
+                            <button class="sim-tab" onclick="switchSimTab('executor', this)">Lua Executor</button>
+                            <button class="sim-tab" onclick="switchSimTab('spoofer', this)">HWID Spoofer</button>
+                            <button class="sim-tab" onclick="switchSimTab('misc', this)">Araç & Karakter</button>
+                        </div>
+                        <div class="window-content" id="simContent">
+                            <!-- JS ile dinamik değişir -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖZELLİKLER (6 KART) -->
+        <section id="features" class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="badge">Modüller</span>
+                    <h2>Tek bir .exe içinde tüm MTA:SA araçları</h2>
+                    <p class="text-muted">Gereksiz karmaşadan uzak, tamamen stabilite ve gizlilik odaklı mimari.</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="card feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Aimbot & Silent Aim</h3>
+                        <p class="text-muted">Doğal görünüm için insansı yumuşatma (Smooth), FOV çemberi, kemik seçimi (Baş/Gövde) ve mermi sekmeme (No Recoil/Spread) ayarları.</p>
+                        <ul class="feature-list">
+                            <li>Görüş alanı (Visible Check) kontrolü</li>
+                            <li>Takım / Arkadaş listesi yoksayma</li>
+                            <li>Silaha özel ayrı profil kaydetme</li>
+                        </ul>
+                    </div>
+
+                    <div class="card feature-card">
+                        <div class="feature-icon">👁️</div>
+                        <h3>ESP & Görsel Algılama</h3>
+                        <p class="text-muted">Düşük sistemlerde bile FPS düşürmeyen DirectX tabanlı çizim motoru ile oyuncuları, araçları ve objeleri duvar arkasından görün.</p>
+                        <ul class="feature-list">
+                            <li>2D Kutu, İskelet (Skeleton) ve İsim ESP</li>
+                            <li>Can, Zırh, Silah ve Mesafe bilgisi</li>
+                            <li>Araç modeli, kilit durumu ve plaka okuma</li>
+                        </ul>
+                    </div>
+
+                    <div class="card feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Lua Executor & Dumper</h3>
+                        <p class="text-muted">Sunucu taraflı anti-cheat kontrollerini aşarak özel Lua scriptlerini doğrudan oyun içerisinde çalıştırın veya inceleyin.</p>
+                        <ul class="feature-list">
+                            <li>Güvenli Client-Side Lua çalıştırıcı</li>
+                            <li>Sunucu scriptlerini analiz etme (Resource Dumper)</li>
+                            <li>Event tetikleme ve koruma filtreleri</li>
+                        </ul>
+                    </div>
+
+                    <div class="card feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Dahili HWID Spoofer</h3>
+                        <p class="text-muted">Ekstra bir programa ihtiyaç duymadan MTA serial ve donanım kimliğinizi tek tıkla maskeleyin.</p>
+                        <ul class="feature-list">
+                            <li>Tek tıkla geçici veya kalıcı Serial değişimi</li>
+                            <li>Sunucu banlarını ve izlerini temizleme</li>
+                            <li>Format gerektirmeyen güvenli yapı</li>
+                        </ul>
+                    </div>
+
+                    <div class="card feature-card">
+                        <div class="feature-icon">🎥</div>
+                        <h3>%100 Stream Proof</h3>
+                        <p class="text-muted">Yayın yaparken veya sunucu yetkilileri ekran görüntüsü aldığında hile menüsü ve ESP çizimleri asla görünmez.</p>
+                        <ul class="feature-list">
+                            <li>OBS, Discord ve ekran kaydı gizliliği</li>
+                            <li>Anti-Screengrab (Sunucu SS koruma kalkanı)</li>
+                            <li>Panik tuşu ile anında bellekten silme</li>
+                        </ul>
+                    </div>
+
+                    <div class="card feature-card">
+                        <div class="feature-icon">🚗</div>
+                        <h3>Araç & Karakter Modülleri</h3>
+                        <p class="text-muted">Roleplay, Freeroam ve PvP sunucuları için özelleştirilmiş hareket ve fizik kontrolleri.</p>
+                        <ul class="feature-list">
+                            <li>Airbreak / Noclip ve ayarlanabilir Speedhack</li>
+                            <li>Araç Handling düzenleyici & Godmode</li>
+                            <li>Uzaktan araç tamiri ve kilit açma</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NASIL ÇALIŞIR (3 ADIM) -->
+        <section class="steps-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="badge">Başlangıç</span>
+                    <h2>3 Adımda Kurulum ve Kullanım</h2>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <span class="step-num mono">01</span>
+                        <h3>Siteye Kayıt Olun</h3>
+                        <p class="text-muted">Sağ üstteki <strong>Kayıt Ol</strong> butonundan saniyeler içinde müşteri hesabınızı oluşturun.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-num mono">02</span>
+                        <h3>Paketinizi Seçin</h3>
+                        <p class="text-muted">Haftalık, Aylık veya Sınırsız lisans anahtarınızı satın alıp müşteri panelinizden aktifleştirin.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-num mono">03</span>
+                        <h3>.EXE İndirip Başlatın</h3>
+                        <p class="text-muted">Panelden <code class="mono">DragoneLoader.exe</code> dosyasını indirin, giriş yapın ve MTA:SA'yı başlatın.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FİYATLANDIRMA (3 PAKET) -->
+        <section id="pricing" class="pricing-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="badge">Lisans Paketleri</span>
+                    <h2>Şeffaf ve Esnek Fiyatlandırma</h2>
+                    <p class="text-muted">Tüm paketler aynı tüm özelliklere (Aimbot, ESP, Lua Executor, Spoofer) tam erişim sağlar.</p>
+                </div>
+
+                <div class="pricing-grid" id="pricingGrid">
+                    <!-- JS (CONFIG) üzerinden otomatik oluşturulur -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SIKÇA SORULAN SORULAR -->
+        <section id="faq" class="faq-section">
+            <div class="container faq-container">
+                <div class="section-header">
+                    <span class="badge">S.S.S.</span>
+                    <h2>Sıkça Sorulan Sorular</h2>
+                </div>
+
+                <div class="faq-list">
+                    <details class="faq-item">
+                        <summary>Satın aldıktan sonra .exe dosyasını nasıl indireceğim?</summary>
+                        <p>Sitemize kayıt olup giriş yaptıktan sonra üst kısımda <strong>Müşteri Paneli</strong> açılır. Satın aldığınız lisans kodunu (Key) panele girdiğiniz anda <code class="mono">DragoneLoader.exe</code> indirme butonu aktifleşir.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Yayın açarken veya admin SS aldığında belli olur mu?</summary>
+                        <p>Hayır. Yazılımımızda dahili <strong>Stream Proof</strong> ve <strong>Anti-Screengrab</strong> modülü bulunur. Sunucu scriptleri ekran görüntüsü aldığında tüm görsel hileler otomatik olarak gizlenir ve temiz ekran gönderilir.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Bilgisayar değiştirdiğimde (HWID) lisansım yanar mı?</summary>
+                        <p>Lisansınız ilk giriş yaptığınız bilgisayara (HWID) tanımlanır. Bilgisayar değiştirdiğinizde veya format attığınızda Discord destek hattımızdan veya panelden ücretsiz HWID sıfırlama talebi oluşturabilirsiniz.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Hangi ödeme yöntemleri geçerli?</summary>
+                        <p>Papara, IBAN / Havale-EFT, Kredi/Banka Kartı ve Kripto para ile 7/24 güvenli şekilde bakiye yükleyebilir veya lisans anahtarı alabilirsiniz.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-left">
+                <div class="brand">
+                    <div class="brand-logo">D</div>
+                    <span class="brand-name">Dragone<span class="brand-muted">Cheats</span></span>
+                </div>
+                <p class="text-muted">© 2026 Dragone Cheats. Tüm hakları saklıdır.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#features">Özellikler</a>
+                <a href="#pricing">Fiyatlar</a>
+                <a href="#" id="footerDiscordLink" target="_blank" rel="noopener">Discord Topluluğu</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- KAYIT OL / GİRİŞ YAP MODAL -->
+    <div id="authModal" class="modal-backdrop hidden" onclick="closeModalOnBackdrop(event, 'authModal')">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-tabs">
+                    <button id="tabLoginBtn" class="modal-tab active" onclick="switchAuthTab('login')">Giriş Yap</button>
+                    <button id="tabRegisterBtn" class="modal-tab" onclick="switchAuthTab('register')">Kayıt Ol</button>
+                </div>
+                <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
+            </div>
+
+            <!-- Giriş Formu -->
+            <form id="loginForm" class="modal-body" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Kullanıcı Adı veya E-posta</label>
+                    <input type="text" id="loginUsername" class="input" placeholder="kullaniciadi" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" id="loginPassword" class="input" placeholder="••••••••" required>
+                </div>
+                <div id="loginError" class="form-error hidden"></div>
+                <button type="submit" class="btn btn-primary btn-full">Müşteri Paneline Giriş Yap</button>
+                <p class="modal-footer-text">
+                    Henüz hesabınız yok mu? <a href="#" onclick="switchAuthTab('register'); return false;">Hemen Kayıt Olun</a>
+                </p>
+            </form>
+
+            <!-- Kayıt Formu -->
+            <form id="registerForm" class="modal-body hidden" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" id="regUsername" class="input" placeholder="Örn: dragone_user" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label>E-posta Adresi</label>
+                    <input type="email" id="regEmail" class="input" placeholder="ornek@mail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" id="regPassword" class="input" placeholder="En az 6 karakter" required minlength="6">
+                </div>
+                <div id="registerError" class="form-error hidden"></div>
+                <button type="submit" class="btn btn-primary btn-full">Hesap Oluştur ve Devam Et</button>
+                <p class="modal-footer-text">
+                    Zaten üye misiniz? <a href="#" onclick="switchAuthTab('login'); return false;">Giriş Yapın</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- SATIN ALMA MODAL -->
+    <div id="purchaseModal" class="modal-backdrop hidden" onclick="closeModalOnBackdrop(event, 'purchaseModal')">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="purchaseModalTitle">Paket Satın Al</h3>
+                <button class="modal-close" onclick="closeModal('purchaseModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="purchase-summary">
+                    <div>
+                        <span class="text-muted">Seçilen Paket</span>
+                        <h4 id="purchasePlanName">-</h4>
+                    </div>
+                    <div class="purchase-price mono" id="purchasePlanPrice">-</div>
+                </div>
+                <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 1rem;">
+                    Ödeme işlemini tamamladıktan sonra size verilen <strong>Lisans Anahtarını (Key)</strong> müşteri panelinize girerek <code class="mono">DragoneLoader.exe</code> dosyasını anında indirebilirsiniz.
+                </p>
+                <div class="purchase-methods">
+                    <a id="purchaseDiscordBtn" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-full">
+                        Discord Üzerinden Satın Al (7/24 Teslimat)
+                    </a>
+                    <a id="purchaseShopLinkBtn" href="#" target="_blank" rel="noopener" class="btn btn-outline btn-full">
+                        Otomatik Ödeme (Shopier / Карt) ile Al
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
