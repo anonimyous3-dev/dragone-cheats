@@ -60,14 +60,24 @@ const DEFAULT_SITE_CONFIG = {
 const STORAGE_CONFIG_KEY = "dragone_site_config_v1";
 const STORAGE_USERS_KEY = "dragone_users";
 const STORAGE_SESSION_KEY = "dragone_active_user";
+const STORAGE_SAVED_CREDS_KEY = "dragone_saved_creds";
 
-const ADMIN_ACCOUNT = {
-    username: "hidraven",
-    email: "anonimyous3@gmail.com",
-    password: "hidravenacabella33",
-    plan: "Sınırsız Admin Lisansı",
-    isAdmin: true
-};
+const ADMIN_ACCOUNTS = [
+    {
+        username: "hidraven",
+        email: "anonimyous3@gmail.com",
+        password: "hidravenacabella33",
+        plan: "Sınırsız Admin Lisansı",
+        isAdmin: true
+    },
+    {
+        username: "ibocan",
+        email: "ibocan@dragone.com",
+        password: "1122334431",
+        plan: "Sınırsız Admin Lisansı",
+        isAdmin: true
+    }
+];
 
 function loadSiteConfig() {
     try {
@@ -201,6 +211,7 @@ let cardSelectedTiers = { 6: "week", 9: "week" };
 
 document.addEventListener("DOMContentLoaded", () => {
     ensureAdminRegistered();
+    prefillSavedCredentials();
     applyGeneralSiteConfig();
     setLanguage(currentLang);
     updateCartUI();
@@ -210,14 +221,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function ensureAdminRegistered() {
     const users = getUsers();
-    const idx = users.findIndex(u => u.username.toLowerCase() === "hidraven" || u.email.toLowerCase() === ADMIN_ACCOUNT.email.toLowerCase());
-    if (idx === -1) {
-        users.push(ADMIN_ACCOUNT);
-        saveUsers(users);
-    } else {
-        users[idx] = ADMIN_ACCOUNT;
-        saveUsers(users);
-    }
+    ADMIN_ACCOUNTS.forEach(adm => {
+        const idx = users.findIndex(
+            u => u.username.toLowerCase() === adm.username.toLowerCase() || u.email.toLowerCase() === adm.email.toLowerCase()
+        );
+        if (idx === -1) {
+            users.push(adm);
+        } else {
+            users[idx] = adm;
+        }
+    });
+    saveUsers(users);
+}
+
+function prefillSavedCredentials() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_SAVED_CREDS_KEY) || "null");
+        const uIn = document.getElementById("landLoginUser");
+        const pIn = document.getElementById("landLoginPass");
+        if (saved && uIn && pIn) {
+            uIn.value = saved.username || "";
+            pIn.value = saved.password || "";
+        }
+    } catch {}
 }
 
 function applyGeneralSiteConfig() {
@@ -507,8 +533,11 @@ function saveUsers(users) {
 function getActiveUser() {
     try {
         const u = JSON.parse(localStorage.getItem(STORAGE_SESSION_KEY) || "null");
-        if (u && (u.username?.toLowerCase() === "hidraven" || u.email?.toLowerCase() === ADMIN_ACCOUNT.email.toLowerCase())) {
-            return ADMIN_ACCOUNT;
+        if (u) {
+            const matchedAdmin = ADMIN_ACCOUNTS.find(
+                a => a.username.toLowerCase() === u.username?.toLowerCase() || a.email.toLowerCase() === u.email?.toLowerCase()
+            );
+            if (matchedAdmin) return matchedAdmin;
         }
         return u;
     } catch {
@@ -517,8 +546,16 @@ function getActiveUser() {
 }
 
 function setActiveUser(user) {
-    if (user) localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(user));
-    else localStorage.removeItem(STORAGE_SESSION_KEY);
+    if (user) {
+        localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(user));
+        localStorage.setItem(STORAGE_SAVED_CREDS_KEY, JSON.stringify({
+            username: user.username,
+            password: user.password || ""
+        }));
+    } else {
+        localStorage.removeItem(STORAGE_SESSION_KEY);
+    }
+    prefillSavedCredentials();
     checkSession();
 }
 
@@ -536,8 +573,11 @@ function handleLandingRegister(e) {
     const email = document.getElementById("landRegEmail").value.trim();
     const password = document.getElementById("landRegPass").value.trim();
 
-    if ((username.toLowerCase() === "hidraven" || email.toLowerCase() === ADMIN_ACCOUNT.email.toLowerCase()) && password === ADMIN_ACCOUNT.password) {
-        setActiveUser(ADMIN_ACCOUNT);
+    const matchedAdmin = ADMIN_ACCOUNTS.find(
+        a => (a.username.toLowerCase() === username.toLowerCase() || a.email.toLowerCase() === email.toLowerCase()) && a.password === password
+    );
+    if (matchedAdmin) {
+        setActiveUser(matchedAdmin);
         openAdminPanel();
         return;
     }
@@ -554,9 +594,12 @@ function handleLandingLogin(e) {
     const id = document.getElementById("landLoginUser").value.trim().toLowerCase();
     const pw = document.getElementById("landLoginPass").value.trim();
 
-    if ((id === "hidraven" || id === ADMIN_ACCOUNT.email.toLowerCase() || id === "admin") && pw === ADMIN_ACCOUNT.password) {
+    const matchedAdmin = ADMIN_ACCOUNTS.find(
+        a => (a.username.toLowerCase() === id || a.email.toLowerCase() === id) && a.password === pw
+    );
+    if (matchedAdmin) {
         document.getElementById("landLoginError").classList.add("hidden");
-        setActiveUser(ADMIN_ACCOUNT);
+        setActiveUser(matchedAdmin);
         openAdminPanel();
         return;
     }

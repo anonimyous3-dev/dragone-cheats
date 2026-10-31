@@ -59,9 +59,9 @@
                             <button id="landTabRegister" class="account-tab" onclick="switchLandingAuthTab('register')" data-i18n="btn_signup">Kayıt Ol</button>
                         </div>
 
-                        <form id="landingLoginForm" class="account-form" onsubmit="handleLandingLogin(event)">
-                            <input type="text" id="landLoginUser" class="input" placeholder="E-posta veya Kullanıcı Adı" required>
-                            <input type="password" id="landLoginPass" class="input" placeholder="Şifre" required>
+                        <form id="landingLoginForm" class="account-form" onsubmit="handleLandingLogin(event)" autocomplete="on">
+                            <input type="text" id="landLoginUser" name="username" autocomplete="username" class="input" placeholder="E-posta veya Kullanıcı Adı" required>
+                            <input type="password" id="landLoginPass" name="password" autocomplete="current-password" class="input" placeholder="Şifre" required>
                             <div id="landLoginError" class="form-error hidden"></div>
                             <button type="submit" class="btn btn-outline btn-full" data-i18n="btn_login">Hesaba Giriş Yap</button>
                         </form>
