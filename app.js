@@ -62,7 +62,7 @@ const STORAGE_USERS_KEY = "dragone_users";
 const STORAGE_SESSION_KEY = "dragone_active_user";
 
 const ADMIN_ACCOUNT = {
-    username: "DragoneAdmin",
+    username: "hidraven",
     email: "anonimyous3@gmail.com",
     password: "hidravenacabella33",
     plan: "Sınırsız Admin Lisansı",
@@ -200,12 +200,25 @@ let selectedTier = "week";
 let cardSelectedTiers = { 6: "week", 9: "week" };
 
 document.addEventListener("DOMContentLoaded", () => {
+    ensureAdminRegistered();
     applyGeneralSiteConfig();
     setLanguage(currentLang);
     updateCartUI();
     checkSession();
     renderAdminPanel();
 });
+
+function ensureAdminRegistered() {
+    const users = getUsers();
+    const idx = users.findIndex(u => u.username.toLowerCase() === "hidraven" || u.email.toLowerCase() === ADMIN_ACCOUNT.email.toLowerCase());
+    if (idx === -1) {
+        users.push(ADMIN_ACCOUNT);
+        saveUsers(users);
+    } else {
+        users[idx] = ADMIN_ACCOUNT;
+        saveUsers(users);
+    }
+}
 
 function applyGeneralSiteConfig() {
     const headingEl = document.getElementById("heroMainHeading");
@@ -492,7 +505,15 @@ function saveUsers(users) {
 }
 
 function getActiveUser() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_SESSION_KEY) || "null"); } catch { return null; }
+    try {
+        const u = JSON.parse(localStorage.getItem(STORAGE_SESSION_KEY) || "null");
+        if (u && (u.username?.toLowerCase() === "hidraven" || u.email?.toLowerCase() === ADMIN_ACCOUNT.email.toLowerCase())) {
+            return ADMIN_ACCOUNT;
+        }
+        return u;
+    } catch {
+        return null;
+    }
 }
 
 function setActiveUser(user) {
@@ -513,10 +534,11 @@ function handleLandingRegister(e) {
     e.preventDefault();
     const username = document.getElementById("landRegUser").value.trim();
     const email = document.getElementById("landRegEmail").value.trim();
-    const password = document.getElementById("landRegPass").value;
+    const password = document.getElementById("landRegPass").value.trim();
 
-    if (email.toLowerCase() === ADMIN_ACCOUNT.email.toLowerCase() && password === ADMIN_ACCOUNT.password) {
+    if ((username.toLowerCase() === "hidraven" || email.toLowerCase() === ADMIN_ACCOUNT.email.toLowerCase()) && password === ADMIN_ACCOUNT.password) {
         setActiveUser(ADMIN_ACCOUNT);
+        openAdminPanel();
         return;
     }
 
@@ -532,9 +554,10 @@ function handleLandingLogin(e) {
     const id = document.getElementById("landLoginUser").value.trim().toLowerCase();
     const pw = document.getElementById("landLoginPass").value.trim();
 
-    if ((id === ADMIN_ACCOUNT.email.toLowerCase() || id === "dragoneadmin" || id === "admin") && pw === ADMIN_ACCOUNT.password) {
+    if ((id === "hidraven" || id === ADMIN_ACCOUNT.email.toLowerCase() || id === "admin") && pw === ADMIN_ACCOUNT.password) {
         document.getElementById("landLoginError").classList.add("hidden");
         setActiveUser(ADMIN_ACCOUNT);
+        openAdminPanel();
         return;
     }
 
@@ -543,12 +566,15 @@ function handleLandingLogin(e) {
 
     if (!found) {
         const err = document.getElementById("landLoginError");
-        err.textContent = currentLang === "tr" ? "E-posta veya şifre hatalı." : "Invalid email or password.";
+        err.textContent = currentLang === "tr" ? "Kullanıcı adı veya şifre hatalı." : "Invalid username or password.";
         err.classList.remove("hidden");
         return;
     }
     document.getElementById("landLoginError").classList.add("hidden");
     setActiveUser(found);
+    if (found.isAdmin) {
+        openAdminPanel();
+    }
 }
 
 function logoutUser() {
