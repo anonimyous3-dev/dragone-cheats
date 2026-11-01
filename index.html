@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
     <div id="landingStage" class="landing-stage">
@@ -319,21 +319,33 @@
             </div>
 
             <div class="modal-body">
-                <label class="section-sub-label" data-i18n="select_duration">Lisans Süresi Seçin:</label>
-                <div class="plan-selector-grid" id="modalPlanSelector"></div>
+                <div id="modalPricingArea">
+                    <label class="section-sub-label" data-i18n="select_duration">Lisans Süresi Seçin:</label>
+                    <div class="plan-selector-grid" id="modalPlanSelector"></div>
+                </div>
 
                 <div class="product-details-scroll">
                     <p id="modalProductDesc" class="product-desc-text"></p>
                     <div id="modalProductFeatures" class="product-features-badges"></div>
                 </div>
 
-                <div class="modal-actions-row">
+                <div id="modalPaidActions" class="modal-actions-row">
                     <button class="btn btn-outline btn-full" onclick="addSelectedToCart()">
                         <span data-i18n="btn_add_cart">Sepete Ekle</span>
                     </button>
                     <button class="btn btn-gradient btn-full" onclick="buySelectedNow()">
                         <span data-i18n="btn_buy_now">Hemen Satın Al (Discord)</span>
                     </button>
+                </div>
+
+                <div id="modalFreeActions" class="free-download-panel hidden">
+                    <div class="free-download-header">
+                        <span class="status-badge status-online">ÜCRETSİZ / FREE</span>
+                        <span class="mono" style="font-size:0.8rem; color:#a1a1aa;">DNGMCR.exe</span>
+                    </div>
+                    <a id="modalFreeDownloadBtn" href="DNGMCR.exe" download="DNGMCR.exe" class="btn btn-gradient btn-lg btn-full">
+                        <span>⬇️ Macroyu İndir (DNGMCR.exe)</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -373,6 +385,6 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=5"></script>
 </body>
 </html>

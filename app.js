@@ -35,7 +35,32 @@ const DEFAULT_SITE_CONFIG = {
             rating: "4.9",
             reviews: 142,
             image: "mta.png",
-            isPremium: true
+            isPremium: true,
+            isFree: false
+        },
+        {
+            id: 7,
+            game: "MTA",
+            name_tr: "Dragone MTA Macro",
+            name_en: "Dragone MTA Macro",
+            sub_tr: "MTA Armor/Health Macro & No Recoil",
+            sub_en: "MTA Armor/Health Macro & No Recoil",
+            desc_tr: "⚡ Dragone MTA Macro — Hızlı Armor/Health basma, No Recoil, özel Crosshair ve Litefoot modüllerini içeren profesyonel MTA макро yazılımı.",
+            desc_en: "⚡ Dragone MTA Macro — Professional MTA macro utility featuring Armor/Health macro, No Recoil, custom Crosshair, and Litefoot modules.",
+            features: [
+                "🛡️ [HEALTH] — Armor Macro (2) • Health Macro (3)",
+                "🖱️ [MOUSE OPS] — Mouse Vibration (4) • No Recoil",
+                "🎯 [CROSSHAIR] — Crosshair • Sniper Crosshair • Ctrl Crosshair",
+                "⚡ [OTHER] — Litefoot (1) • Gun Sound • Custom Config (by.hidraven & by.ibocan)"
+            ],
+            prices: { week: 120, month: 290, lifetime: 650 },
+            status: "online",
+            rating: "5.0",
+            reviews: 96,
+            image: "macro.jpg",
+            isPremium: true,
+            isFree: true,
+            downloadFile: "DNGMCR.exe"
         },
         {
             id: 9,
@@ -52,12 +77,13 @@ const DEFAULT_SITE_CONFIG = {
             rating: "5.0",
             reviews: 0,
             image: "cs2.png",
-            isPremium: false
+            isPremium: false,
+            isFree: false
         }
     ]
 };
 
-const STORAGE_CONFIG_KEY = "dragone_site_config_v1";
+const STORAGE_CONFIG_KEY = "dragone_site_config_v2";
 const STORAGE_USERS_KEY = "dragone_users";
 const STORAGE_SESSION_KEY = "dragone_active_user";
 const STORAGE_SAVED_CREDS_KEY = "dragone_saved_creds";
@@ -207,7 +233,7 @@ let currentLang = localStorage.getItem("dragone_lang") || "tr";
 let cart = JSON.parse(localStorage.getItem("dragone_cart") || "[]");
 let selectedProduct = null;
 let selectedTier = "week";
-let cardSelectedTiers = { 6: "week", 9: "week" };
+let cardSelectedTiers = { 6: "week", 7: "week", 9: "week" };
 
 document.addEventListener("DOMContentLoaded", () => {
     ensureAdminRegistered();
@@ -344,11 +370,49 @@ function renderProducts() {
 
     grid.innerHTML = filtered.map(p => {
         const isOnline = p.status === "online";
+        const isFree = Boolean(p.isFree);
         const title = currentLang === "tr" ? p.name_tr : p.name_en;
         const sub = currentLang === "tr" ? p.sub_tr : p.sub_en;
         const activeTier = cardSelectedTiers[p.id] || "week";
         const activePrice = p.prices[activeTier];
         const activeTierLabel = tierLabelMap[activeTier];
+
+        const pricingBodyHtml = isFree
+            ? `<div class="free-card-banner">${currentLang === "tr" ? "✨ ÜCRETSİZ — Anında İndir" : "✨ FREE — Instant Download"}</div>`
+            : `
+                <div class="product-tier-pills">
+                    <div class="tier-mini ${activeTier === 'week' ? 'active' : ''}" onclick="selectCardTier(${p.id}, 'week')">
+                        <span>${dict.tier_week}</span>
+                        <strong>${p.prices.week} TL</strong>
+                    </div>
+                    <div class="tier-mini ${activeTier === 'month' ? 'active' : ''}" onclick="selectCardTier(${p.id}, 'month')">
+                        <span>${dict.tier_month}</span>
+                        <strong>${p.prices.month} TL</strong>
+                    </div>
+                    <div class="tier-mini ${activeTier === 'lifetime' ? 'active' : ''}" onclick="selectCardTier(${p.id}, 'lifetime')">
+                        <span>${dict.tier_lifetime}</span>
+                        <strong>${p.prices.lifetime} TL</strong>
+                    </div>
+                </div>
+            `;
+
+        const footerLeftHtml = isFree
+            ? `
+                <div class="from-price">
+                    <span>${currentLang === "tr" ? "Lisans" : "License"}</span>
+                    <strong style="color: #4ade80;">${currentLang === "tr" ? "ÜCRETSİZ" : "FREE"}</strong>
+                </div>
+            `
+            : `
+                <div class="from-price">
+                    <span>${activeTierLabel}</span>
+                    <strong>${activePrice} TL</strong>
+                </div>
+            `;
+
+        const actionBtnLabel = !isOnline
+            ? dict.btn_offline
+            : (isFree ? (currentLang === "tr" ? "Macroyu İndir" : "Download Macro") : dict.btn_purchase);
 
         return `
             <div class="product-card">
@@ -371,30 +435,14 @@ function renderProducts() {
                     <h3>${title}</h3>
                     <p>${sub}</p>
 
-                    <div class="product-tier-pills">
-                        <div class="tier-mini ${activeTier === 'week' ? 'active' : ''}" onclick="selectCardTier(${p.id}, 'week')">
-                            <span>${dict.tier_week}</span>
-                            <strong>${p.prices.week} TL</strong>
-                        </div>
-                        <div class="tier-mini ${activeTier === 'month' ? 'active' : ''}" onclick="selectCardTier(${p.id}, 'month')">
-                            <span>${dict.tier_month}</span>
-                            <strong>${p.prices.month} TL</strong>
-                        </div>
-                        <div class="tier-mini ${activeTier === 'lifetime' ? 'active' : ''}" onclick="selectCardTier(${p.id}, 'lifetime')">
-                            <span>${dict.tier_lifetime}</span>
-                            <strong>${p.prices.lifetime} TL</strong>
-                        </div>
-                    </div>
+                    ${pricingBodyHtml}
 
                     <div class="product-footer">
-                        <div class="from-price">
-                            <span>${activeTierLabel}</span>
-                            <strong>${activePrice} TL</strong>
-                        </div>
+                        ${footerLeftHtml}
                         <button class="btn ${isOnline ? 'btn-gradient' : 'btn-outline'}" 
                                 ${!isOnline ? 'disabled' : ''} 
                                 onclick="openProductModal(${p.id})">
-                            ${isOnline ? dict.btn_purchase : dict.btn_offline}
+                            ${actionBtnLabel}
                         </button>
                     </div>
                 </div>
@@ -416,7 +464,28 @@ function openProductModal(productId) {
     const featContainer = document.getElementById("modalProductFeatures");
     featContainer.innerHTML = p.features.map(f => `<div class="feat-line">${f}</div>`).join("");
 
-    renderModalPlans();
+    const pricingArea = document.getElementById("modalPricingArea");
+    const paidActions = document.getElementById("modalPaidActions");
+    const freeActions = document.getElementById("modalFreeActions");
+    const freeDlBtn = document.getElementById("modalFreeDownloadBtn");
+
+    if (p.isFree) {
+        if (pricingArea) pricingArea.classList.add("hidden");
+        if (paidActions) paidActions.classList.add("hidden");
+        if (freeActions) freeActions.classList.remove("hidden");
+        if (freeDlBtn) {
+            const file = p.downloadFile || "DNGMCR.exe";
+            freeDlBtn.href = file;
+            freeDlBtn.setAttribute("download", file);
+            freeDlBtn.innerHTML = `<span>⬇️ ${currentLang === "tr" ? "Macroyu İndir" : "Download Macro"} (${file})</span>`;
+        }
+    } else {
+        if (pricingArea) pricingArea.classList.remove("hidden");
+        if (paidActions) paidActions.classList.remove("hidden");
+        if (freeActions) freeActions.classList.add("hidden");
+        renderModalPlans();
+    }
+
     document.getElementById("productModal").classList.remove("hidden");
 }
 
@@ -731,12 +800,18 @@ function renderAdminPanel() {
             <div class="admin-prod-box">
                 <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
                     <input type="text" class="input" id="admProdName_${idx}" value="${p.name_tr}" style="font-weight:700;">
-                    <select class="select-input" id="admProdStatus_${idx}" style="width:130px;">
+                    <select class="select-input" id="admProdStatus_${idx}" style="width:120px;">
                         <option value="online" ${p.status === 'online' ? 'selected' : ''}>Aktif</option>
                         <option value="offline" ${p.status === 'offline' ? 'selected' : ''}>Yakında</option>
                     </select>
                 </div>
-                <input type="text" class="input" id="admProdSub_${idx}" value="${p.sub_tr}" placeholder="Alt açıklama">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+                    <input type="text" class="input" id="admProdSub_${idx}" value="${p.sub_tr}" placeholder="Alt açıklama">
+                    <select class="select-input" id="admProdFree_${idx}" style="width:165px;">
+                        <option value="true" ${p.isFree ? 'selected' : ''}>Bedava (Ücretsiz)</option>
+                        <option value="false" ${!p.isFree ? 'selected' : ''}>Paralı (Ücretli)</option>
+                    </select>
+                </div>
                 <div class="admin-price-row">
                     <div>
                         <label style="font-size:0.7rem; color:#a1a1aa;">1 Hafta (TL)</label>
@@ -783,6 +858,7 @@ function saveProductsAdminSettings() {
         const newName = document.getElementById(`admProdName_${idx}`).value.trim();
         const newSub = document.getElementById(`admProdSub_${idx}`).value.trim();
         const newStatus = document.getElementById(`admProdStatus_${idx}`).value;
+        const isFreeVal = document.getElementById(`admProdFree_${idx}`).value === "true";
         const w = Number(document.getElementById(`admPriceWeek_${idx}`).value) || 120;
         const m = Number(document.getElementById(`admPriceMonth_${idx}`).value) || 290;
         const l = Number(document.getElementById(`admPriceLife_${idx}`).value) || 650;
@@ -791,6 +867,7 @@ function saveProductsAdminSettings() {
         p.name_en = newName;
         p.sub_tr = newSub;
         p.status = newStatus;
+        p.isFree = isFreeVal;
         p.prices = { week: w, month: m, lifetime: l };
     });
     saveSiteConfig();
