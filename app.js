@@ -31,7 +31,7 @@ const DEFAULT_SITE_CONFIG = {
                 "⚙️ [SYSTEM] — Panic Button • Cloud Config • Account • Watermark"
             ],
             prices: { week: 120, month: 290, lifetime: 650 },
-            status: "online",
+            status: "offline",
             rating: "4.9",
             reviews: 142,
             image: "mta.png",
@@ -83,7 +83,7 @@ const DEFAULT_SITE_CONFIG = {
     ]
 };
 
-const STORAGE_CONFIG_KEY = "dragone_site_config_v2";
+const STORAGE_CONFIG_KEY = "dragone_site_config_v3";
 const STORAGE_USERS_KEY = "dragone_users";
 const STORAGE_SESSION_KEY = "dragone_active_user";
 const STORAGE_SAVED_CREDS_KEY = "dragone_saved_creds";
@@ -799,15 +799,15 @@ function renderAdminPanel() {
         prodEditor.innerHTML = SITE_CONFIG.products.map((p, idx) => `
             <div class="admin-prod-box">
                 <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
-                    <input type="text" class="input" id="admProdName_${idx}" value="${p.name_tr}" style="font-weight:700;">
-                    <select class="select-input" id="admProdStatus_${idx}" style="width:120px;">
+                    <input type="text" class="input" id="admProdName_${idx}" value="${p.name_tr}" style="font-weight:700;" oninput="autoSaveProductsAdmin()">
+                    <select class="select-input" id="admProdStatus_${idx}" style="width:120px;" onchange="autoSaveProductsAdmin()">
                         <option value="online" ${p.status === 'online' ? 'selected' : ''}>Aktif</option>
                         <option value="offline" ${p.status === 'offline' ? 'selected' : ''}>Yakında</option>
                     </select>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
-                    <input type="text" class="input" id="admProdSub_${idx}" value="${p.sub_tr}" placeholder="Alt açıklama">
-                    <select class="select-input" id="admProdFree_${idx}" style="width:165px;">
+                    <input type="text" class="input" id="admProdSub_${idx}" value="${p.sub_tr}" placeholder="Alt açıklama" oninput="autoSaveProductsAdmin()">
+                    <select class="select-input" id="admProdFree_${idx}" style="width:165px;" onchange="autoSaveProductsAdmin()">
                         <option value="true" ${p.isFree ? 'selected' : ''}>Bedava (Ücretsiz)</option>
                         <option value="false" ${!p.isFree ? 'selected' : ''}>Paralı (Ücretli)</option>
                     </select>
@@ -815,15 +815,15 @@ function renderAdminPanel() {
                 <div class="admin-price-row">
                     <div>
                         <label style="font-size:0.7rem; color:#a1a1aa;">1 Hafta (TL)</label>
-                        <input type="number" class="input" id="admPriceWeek_${idx}" value="${p.prices.week}">
+                        <input type="number" class="input" id="admPriceWeek_${idx}" value="${p.prices.week}" oninput="autoSaveProductsAdmin()">
                     </div>
                     <div>
                         <label style="font-size:0.7rem; color:#a1a1aa;">1 Ay (TL)</label>
-                        <input type="number" class="input" id="admPriceMonth_${idx}" value="${p.prices.month}">
+                        <input type="number" class="input" id="admPriceMonth_${idx}" value="${p.prices.month}" oninput="autoSaveProductsAdmin()">
                     </div>
                     <div>
                         <label style="font-size:0.7rem; color:#a1a1aa;">Sınırsız (TL)</label>
-                        <input type="number" class="input" id="admPriceLife_${idx}" value="${p.prices.lifetime}">
+                        <input type="number" class="input" id="admPriceLife_${idx}" value="${p.prices.lifetime}" oninput="autoSaveProductsAdmin()">
                     </div>
                 </div>
             </div>
@@ -853,24 +853,36 @@ function saveGeneralAdminSettings() {
     alert("Genel site ayarları kaydedildi!");
 }
 
-function saveProductsAdminSettings() {
+function autoSaveProductsAdmin() {
     SITE_CONFIG.products.forEach((p, idx) => {
-        const newName = document.getElementById(`admProdName_${idx}`).value.trim();
-        const newSub = document.getElementById(`admProdSub_${idx}`).value.trim();
-        const newStatus = document.getElementById(`admProdStatus_${idx}`).value;
-        const isFreeVal = document.getElementById(`admProdFree_${idx}`).value === "true";
-        const w = Number(document.getElementById(`admPriceWeek_${idx}`).value) || 120;
-        const m = Number(document.getElementById(`admPriceMonth_${idx}`).value) || 290;
-        const l = Number(document.getElementById(`admPriceLife_${idx}`).value) || 650;
+        const nameEl = document.getElementById(`admProdName_${idx}`);
+        const subEl = document.getElementById(`admProdSub_${idx}`);
+        const statusEl = document.getElementById(`admProdStatus_${idx}`);
+        const freeEl = document.getElementById(`admProdFree_${idx}`);
+        const wEl = document.getElementById(`admPriceWeek_${idx}`);
+        const mEl = document.getElementById(`admPriceMonth_${idx}`);
+        const lEl = document.getElementById(`admPriceLife_${idx}`);
 
-        p.name_tr = newName;
-        p.name_en = newName;
-        p.sub_tr = newSub;
-        p.status = newStatus;
-        p.isFree = isFreeVal;
-        p.prices = { week: w, month: m, lifetime: l };
+        if (!nameEl || !statusEl) return;
+
+        p.name_tr = nameEl.value.trim() || p.name_tr;
+        p.name_en = nameEl.value.trim() || p.name_en;
+        p.sub_tr = subEl.value.trim();
+        p.status = statusEl.value;
+        p.isFree = freeEl.value === "true";
+        p.prices = {
+            week: Number(wEl.value) || 120,
+            month: Number(mEl.value) || 290,
+            lifetime: Number(lEl.value) || 650
+        };
     });
-    saveSiteConfig();
+    localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(SITE_CONFIG));
+    renderProducts();
+}
+
+function saveProductsAdminSettings() {
+    autoSaveProductsAdmin();
+    renderAdminPanel();
     alert("Ürün fiyatları ve durumları başarıyla güncellendi!");
 }
 
